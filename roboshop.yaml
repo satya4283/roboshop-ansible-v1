@@ -5,6 +5,7 @@
     instances: [mongodb, redis]
     action: create
     ami_id: ami-0055977a6e828a4f4
+    domain_name: daws92ss.store
 
   tasks:
     - name: Create ec2 instances
@@ -20,7 +21,27 @@
       when: action == 'create' 
       register: ec2_output
 
-    - name: print ec2 output
-      debug:
-        msg: "{{ ec2_output }}"
+    # - name: print ec2 output
+    #   debug:
+    #     msg: "{{ ec2_output }}"
+
+#ec2_output.results -- list
+#loop the list
+# {{item.instances[0].private_ip_address}}
+#loop: "{{ec2_output.results}}"
+
+
+    - name: create r53 record
+      amazon.aws.route53:
+        state: present
+        zone: "{{ domain_name }}"
+        record: "{{ item.item }}.{{ domain_name }}"
+        type: A
+        ttl: 1
+        value: "{{ item.instances[0].private_ip_address }}"
+        overwrite: true
+      loop: "{{ ec2_output.results}}"
+
+
+
 
