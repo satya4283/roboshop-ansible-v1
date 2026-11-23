@@ -11,9 +11,9 @@
     #   debug:
     #     msg: "{{ app_name }}"
 
-    - name: Install mongodb
+    - name: Install mongodb server
       package:
-        name: mongodb
+        name: mongodb-org
         state: present
 
     - name: start and enable mongodb 
@@ -21,5 +21,5 @@
         name: mongodb 
         state: started
         enabled: yes
-    
-          
+
+
