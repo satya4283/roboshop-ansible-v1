@@ -2,8 +2,9 @@
   hosts: local
   connection: local
   vars:
+    # ansible-playbook roboshop.yaml -e 'instances=['mongodb', 'redis']'
     instances: [mongodb, redis, mysql, rabbitmq]
-    action: create
+    activity: create
     ami_id: ami-0055977a6e828a4f4
     domain_name: daws92ss.store
 
@@ -18,7 +19,7 @@
           - "roboshop-{{ item }}"
         region: us-east-1
       loop: "{{ instances }}"
-      when: action == 'create' 
+      when: activity == 'create' 
       register: ec2_output
 
     # - name: print ec2 output
@@ -41,7 +42,7 @@
         value: "{{ item.instances[0].private_ip_address }}"
         overwrite: true
       loop: "{{ ec2_output.results}}"
-      when: action == "create"
+      when: activity == "create"
 
     - name: Delete r53 records
       amazon.aws.route53:
@@ -52,7 +53,7 @@
         ttl: 1
         wait: false
       loop: "{{ instances }}"
-      when: action == "delete"
+      when: activity == "delete"
 
     - name: Delete EC2 instance
       amazon.aws.ec2_instance:
@@ -61,7 +62,7 @@
         region: us-east-1
         wait: false
       loop: "{{ instances }}"
-      when: action == "delete"
+      when: activity == "delete"
 
 
 
