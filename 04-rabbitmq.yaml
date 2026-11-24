@@ -1,0 +1,9 @@
+- name: Configure rabbitmq server
+  hosts: rabbitmq
+  tasks:
+    - name: copy rabbitmq repo
+      copy:
+        src: rabbitmq.repo 
+        dest: /etc/yum.repos.d/rabbitmq.repo
+    
+    - name: 
