@@ -11,3 +11,6 @@ cart_host: cart.daws92ss.store
 shipping_host: shipping.daws92ss.store
 payment_host: payment.daws92ss.store
 
+mysql_root_password: RoboShop@1
+
+
