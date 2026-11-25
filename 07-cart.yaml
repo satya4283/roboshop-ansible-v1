@@ -1,5 +1,5 @@
-- name: Configure catalogue server
-  hosts: catalogue
+- name: Configure cart server
+  hosts: cart
   become: yes 
   tasks:
     - name: disable default nodjs  
@@ -27,9 +27,9 @@
         path: /app
         state: absent
 
-    - name: Remove catalogue.zip 
+    - name: Remove cart.zip 
       file:
-        path: /tmp/catalogue.zip
+        path: /tmp/cart.zip
         state: absent
     
     - name: create app directory
@@ -37,14 +37,14 @@
         path: /app
         state: directory
 
-    - name: Download catalogue application
+    - name: Download cart application
       get_url:
-        url: https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/catalogue-v4.zip
-        dest: /tmp/catalogue.zip
+        url: https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/cart-v4.zip
+        dest: /tmp/cart.zip
 
-    - name: Unzip catalogue 
+    - name: Unzip cart 
       unarchive:
-        src: /tmp/catalogue.zip
+        src: /tmp/cart.zip
         dest: /app
         remote_src: yes
     
@@ -53,17 +53,17 @@
         path: /app
         state: present
 
-    - name: copy catalogue service 
+    - name: copy cart service 
       template:
-        src: catalogue.service.j2
-        dest: /etc/systemd/system/catalogue.service
+        src: cart.service.j2
+        dest: /etc/systemd/system/cart.service
 
     - name: demon reload 
       systemd_service:
         daemon_reload: true
 
-    - name: start and enable catalogue 
+    - name: start and enable cart 
       service:
-        name: catalogue 
+        name: cart 
         state: restarted
         enabled: yes
