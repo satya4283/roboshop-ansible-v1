@@ -21,7 +21,7 @@
         msg: "{{ java25 }}"
       
     - name: make java25 as default
-      command: alternatives --config java "{{ java25.stdout }}"
+      command: alternatives --config java {{ java25.stdout }}
 
     - name: set JAVA_HOME 
       copy:
@@ -66,5 +66,5 @@
     - name: Install maven dependepcies
       command: mvn clean package
 
-      
+
 
