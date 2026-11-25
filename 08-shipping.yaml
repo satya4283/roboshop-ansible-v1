@@ -28,6 +28,43 @@
         content: "export JAVA_HOME={{ java25.stdout | dirname | dirname }}"
         dest: /etc/profile.d/java.sh
     
+    - name: create roboshop system user 
+      user:
+        name: roboshop
+        create_home: false
+        home: /app 
+        shell: /sbin/nologin
+        system: true 
+        comment: "roboshop system user"
 
+    - name: Remove existing app directory
+      file:
+        path: /app
+        state: absent
 
+    - name: Remove shippin.zip 
+      file:
+        path: /tmp/shipping.zip
+        state: absent
+    
+    - name: create app directory
+      file:
+        path: /app
+        state: directory
+
+    - name: Download shipping application
+      get_url:
+        url: https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/shipping-v4.zip
+        dest: /tmp/shipping.zip
+
+    - name: Unzip shipping 
+      unarchive:
+        src: /tmp/shipping.zip
+        dest: /app
+        remote_src: yes
+
+    - name: Install maven dependepcies
+      command: mvn clean package
+
+      
 
