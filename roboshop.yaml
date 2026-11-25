@@ -2,7 +2,7 @@
   hosts: local
   connection: local
   vars:
-    # ansible-playbook roboshop.yaml -e "instances=['mongodb', 'redis']"
+    # ansible-playbook roboshop.yaml -e "instances=['mongodb','redis']"
     # ansible-playbook roboshop.yaml -e "activity=delete"
     instances: [mongodb, redis, mysql, rabbitmq]
     activity: create

@@ -1,0 +1,69 @@
+- name: Configure user server
+  hosts: user
+  become: yes 
+  tasks:
+    - name: disable default nodjs  
+      command: dnf module disable nodejs -y
+
+    - name: Enable nodjs24
+      command: dnf module enable nodejs:24 -y
+
+    - name: Instll nodjs 
+      dnf:
+        name: nodejs 
+        state: present
+
+    - name: create roboshop system user 
+      user:
+        name: roboshop
+        create_home: false
+        home: /app 
+        shell: /sbin/nologin
+        system: true 
+        comment: "roboshop system user"
+
+    - name: Remove existing app directory
+      file:
+        path: /app
+        state: absent
+
+    - name: Remove user.zip 
+      file:
+        path: /tmp/user.zip
+        state: absent
+    
+    - name: create app directory
+      file:
+        path: /app
+        state: directory
+
+    - name: Download user application
+      get_url:
+        url: https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/user-v4.zip
+        dest: /tmp/user.zip
+
+    - name: Unzip user 
+      unarchive:
+        src: /tmp/user.zip
+        dest: /app
+        remote_src: yes
+    
+    - name: Install dependepcies 
+      community.general.npm:
+        path: /app
+        state: present
+
+    - name: copy user service 
+      template:
+        src: user.service.j2
+        dest: /etc/systemd/system/user.service
+
+    - name: demon reload 
+      systemd_service:
+        daemon_reload: true
+
+    - name: start and enable user 
+      service:
+        name: user 
+        state: restarted
+        enabled: yes
