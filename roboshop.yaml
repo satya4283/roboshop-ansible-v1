@@ -77,7 +77,6 @@
         type: A
         ttl: 1
         wait: false
-      loop: "{{ instances }}"
       when: activity == "delete" 
 
     - name: Delete EC2 instance
